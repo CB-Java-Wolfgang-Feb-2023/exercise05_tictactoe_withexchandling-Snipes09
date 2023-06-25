@@ -4,7 +4,6 @@ import java.util.InputMismatchException;
 import java.util.Scanner;
 
 public class TicTacToeWithException {
-
     private static final char PLAYER_1 = 'X';
     private static final char PLAYER_2 = 'O';
     private static final char EMPTY = ' ';
@@ -47,8 +46,10 @@ public class TicTacToeWithException {
                     System.out.println("Ungültiger Zug. Bitte versuchen Sie es erneut.");
                 }
             } catch (InputMismatchException e) {
-                System.out.println("Ungültige Eingabe. Bitte geben Sie eine Zahl ein.");
+                System.out.println("Ungültige Eingabe. Bitte geben Sie eine ganze Zahl ein.");
                 scanner.nextLine(); // Clear the input buffer
+            } catch (IndexOutOfBoundsException e) {
+                System.out.println("Ungültige Eingabe. Bitte geben Sie eine Zahl im gültigen Bereich ein.");
             }
         }
 
@@ -57,16 +58,24 @@ public class TicTacToeWithException {
 
     private int getInput(String dimension) {
         System.out.print(dimension + ": ");
-        return scanner.nextInt();
+        try {
+            return scanner.nextInt();
+        } catch (InputMismatchException e) {
+            throw new InputMismatchException();
+        }
     }
 
     private boolean makeMove(int row, int col) {
-        if (board[row][col] == EMPTY) {
-            board[row][col] = currentPlayer;
-            currentPlayer = (currentPlayer == PLAYER_1) ? PLAYER_2 : PLAYER_1;
-            return true;
+        try {
+            if (board[row][col] == EMPTY) {
+                board[row][col] = currentPlayer;
+                currentPlayer = (currentPlayer == PLAYER_1) ? PLAYER_2 : PLAYER_1;
+                return true;
+            }
+            return false;
+        } catch (IndexOutOfBoundsException e) {
+            throw new IndexOutOfBoundsException();
         }
-        return false;
     }
 
     private boolean isGameOver() {
